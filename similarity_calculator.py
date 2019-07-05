@@ -19,8 +19,20 @@ if __name__ == "__main__":
     # Prints out the total color score with the configured histogram bin counts
     #print(ColorScorer.scoreColor(imageMap, crowdsourcedValues, Constants.bestRedBinCount, Constants.bestGreenBinCount, Constants.bestBlueBinCount))
 
-    # Tune texture hyperpameter
+    # Tune texture hyperparameter
     #TextureScorer.hyperparameterTuneTextureDistances(imageMap, crowdsourcedValues)
 
     # Prints out the total texture score with the configured histogram count
-    #print(TextureScorer.scoreTexture(imageMap, crowdsourcedValues, 5))
+    #print(TextureScorer.scoreTexture(imageMap, crowdsourcedValues, Constants.bestTextureBinCount))
+
+    # Tune shape hyperparameter
+    #ShapeScorer.hyperparameterTuneShapeDistances(imageMap, crowdsourcedValues)
+
+    # Prints out the total shape score with the configured shape border
+    #print(ShapeScorer.scoreShape(imageMap, crowdsourcedValues, Constants.bestShapeBorder))
+
+    # Tune all hyperparameters
+    #OverallScorer.hyperparameterTuneDistances(imageMap, crowdsourcedValues)
+
+    # Prints out the total overall score with the params configured in Constants
+    #print(OverallScorer.scoreShape(imageMap, crowdsourcedValues, Constants.bestOverallParams)

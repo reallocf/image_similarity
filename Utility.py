@@ -1,3 +1,7 @@
+import sys
+
+import Constants
+
 '''
 Computes the best possible score for the crowdsourced values
 '''
@@ -6,6 +10,36 @@ def bestPossibleScore(crowdsourcedValues):
     for val in crowdsourcedValues.values():
         total += sum(sorted(val, reverse=True)[:3])
     return total
+
+'''
+Finds the 3 "closest" images for each image (calculated via L1 norm)
+Input:
+- imageValueMap: a map of image ids to images encoded as some value (histogram, pixels, etc.)
+- distCalculator: function that sums the values between the two histograms
+- hyperparams: hyperparameters to feed into distCalculator
+Output:
+a map of color distances of this format:
+{
+    01 : [selection1, selection2, selection3],
+    02 : [selection1, selection2, selection3],
+    ...
+    40 : [selection1, selection2, selection3]
+}
+where each selection is the closest calculated color (smallest L1 dist)
+'''
+def findDistances(imageValueMap, distCalculator, hyperparams):
+    colorDistMap = {}
+    for imageId, imageVal in imageValueMap.items():
+        closestThree = [-1, -1, -1]
+        closestThreeDists = [sys.maxsize, sys.maxsize, sys.maxsize]
+        for otherImageId, otherImageVal in imageValueMap.items():
+            if imageId == otherImageId:
+                continue # image shouldn't be compared to itself
+            l1Dist = distCalculator(imageVal, otherImageVal, hyperparams) / (2.0 * Constants.rows * Constants.cols)
+            potentiallySwapInNewDist(closestThree, closestThreeDists, otherImageId, l1Dist)
+        colorDistMap[imageId] = closestThree
+    return colorDistMap
+
 
 '''
 Given the new image added, swap it into the correct position in closestThree
@@ -60,3 +94,21 @@ def findScoreFromCrowdsource(distances, crowdsourcedValues):
         sel3Dist = crowdsourcedValuesList[selectionList[2] - 1]
         totalScore += sel1Dist + sel2Dist + sel3Dist
     return totalScore
+
+'''
+Convert the imageMap with pixels (R, G, B) -> single value (R + G + B) / 3
+'''
+def grayOutImageMap(imageMap):
+    grayImageMap = {}
+    for imageId, pixelList in imageMap.items():
+        grayImageMap[imageId] = [(r + g + b) / 3.0 for (r, g, b) in pixelList]
+    return grayImageMap
+
+'''
+Given an X and Y, find the corresponding value in the linearized image
+'''
+def getXYVal(image, x, y):
+    if x < 0 or y < 0 or x == Constants.rows or y == Constants.cols:
+        return 0
+    else:
+        return image[(x * Constants.rows) + y]
