@@ -1,0 +1,9 @@
+magicHeader = b'P6\n#JDONtLJDO\n89 60\n255\n'
+rows = 60
+cols = 89
+imagePath = "./images/i{0}.ppm"
+crowdPath = "./Crowd.txt"
+maxHistBins = 14
+bestRedBinCount = 8
+bestGreenBinCount = 7
+bestBlueBinCount = 7
