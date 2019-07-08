@@ -48,3 +48,23 @@ def readInCrowdsourcedValues(crowdPath):
             crowdsourcedValues[i] = vals
     assert len(crowdsourcedValues) == 40
     return crowdsourcedValues
+
+'''
+Generate a map of personal values from cgs2161.txt of this format:
+{
+    01 : [mySelection1, mySelection2, mySelection3]
+    02 : [mySelection1, mySelection2, mySelection3]
+    ...
+    40 : [mySelection1, mySelection2, mySelection3]
+}
+'''
+def readInPersonalValues(personalPath):
+    personalValues = {}
+    with open(personalPath) as f:
+        content = f.readlines()
+        for i in range(1, len(content) + 1):
+            vals = [int(x) for x in content[i - 1].split()]
+            assert(i == vals[0])
+            personalValues[i] = vals[1:]
+    assert len(personalValues) == 40
+    return personalValues

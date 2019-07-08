@@ -112,3 +112,16 @@ def getXYVal(image, x, y):
         return 0
     else:
         return image[(x * Constants.rows) + y]
+
+'''
+Report a happiness score 0-120 with an additional 1 being for every found image
+that I selected in cgs2161.txt
+'''
+def reportHappinessScore(distances, personalValues):
+    happinessScore = 0
+    for image, selectionList in distances.items():
+        personalValuesSet = set(personalValues.get(image))
+        for selection in selectionList:
+            if selection in personalValuesSet:
+                happinessScore += 1
+    print(f'Happiness score is {happinessScore}')

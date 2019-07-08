@@ -4,6 +4,7 @@ cols = 89
 maxLaplaceVal = 2040.0 # 255 * 8
 imagePath = "./images/i{0}.ppm"
 crowdPath = "./Crowd.txt"
+personalPath = "./cgs2161.txt"
 # Max values for individual calculations
 maxColorHistBins = 14
 maxTextureHistBins = 100
@@ -15,21 +16,29 @@ bestBlueBinCount = 1
 bestTextureBinCount = 45
 bestShapeBorder = 80
 # Max and min values for joint calculations
-minJointColorHistBins = 8
-maxJointColorHistBins = 8
+minAVal = 0.5
+maxAVal = 0.5
+minBVal = 0.05
+maxBVal = 0.05
+minJointRedHistBins = 6
+maxJointRedHistBins = 6
+minJointGreenHistBins = 6
+maxJointGreenHistBins = 6
+minJointBlueHistBins = 10
+maxJointBlueHistBins = 10
 minJointTextureHistBins = 45
 maxJointTextureHistBins = 45
-minJointShapeBorder = 80
-maxJointShapeBorder = 80
+minJointShapeBorder = 81
+maxJointShapeBorder = 81
 # Best values found for joint calculations
 bestJointAVal = 0.5
 bestJointBVal = 0.05
 bestJointCVal = 0.45
-bestJointRedBinCount = 8
-bestJointGreenBinCount = 8
-bestJointBlueBinCount = 8
+bestJointRedBinCount = 6
+bestJointGreenBinCount = 6
+bestJointBlueBinCount = 10
 bestJointTextureBinCount = 45
-bestJointShapeBorder = 80
+bestJointShapeBorder = 81
 bestOverallParams = (bestJointAVal,
 bestJointBVal,
 bestJointCVal,

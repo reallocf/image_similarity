@@ -26,7 +26,7 @@ Input:
 where bordaCountIm01 is the borda count as calculated in the spec (retrieved
 directly from Crowd.txt)
 '''
-def hyperparameterTuneColorDistances(imageMap, crowdsourcedValues):
+def hyperparameterTuneColorDistances(imageMap, crowdsourcedValues, personalValues):
     bestScore = 0
     bestParams = (-1, -1, -1)
     start = time.time()
@@ -34,7 +34,7 @@ def hyperparameterTuneColorDistances(imageMap, crowdsourcedValues):
         for greenBinCount in range(1, Constants.maxColorHistBins + 1):
             for blueBinCount in range(1, Constants.maxColorHistBins + 1):
                 print(f'Trying red: {redBinCount} ; green: {greenBinCount} ; blue: {blueBinCount}')
-                currentScore = scoreColor(imageMap, crowdsourcedValues, redBinCount, greenBinCount, blueBinCount)
+                currentScore = scoreColor(imageMap, crowdsourcedValues, personalValues, redBinCount, greenBinCount, blueBinCount)
                 if currentScore > bestScore:
                     bestScore = currentScore
                     bestParams = (redBinCount, greenBinCount, blueBinCount)
@@ -47,9 +47,10 @@ def hyperparameterTuneColorDistances(imageMap, crowdsourcedValues):
 Score color logic - can be run directly from main if known bin counts
 otherwise used in hyperparameter tuning
 '''
-def scoreColor(imageMap, crowdsourcedValues, redHistBins, greenHistBins, blueHistBins):
+def scoreColor(imageMap, crowdsourcedValues, personalValues, redHistBins, greenHistBins, blueHistBins):
     imageHistMap = transformIntoColorHistograms(imageMap, redHistBins, greenHistBins, blueHistBins)
     colorDistances = Utility.findDistances(imageHistMap, colorDist, (redHistBins, greenHistBins, blueHistBins))
+    Utility.reportHappinessScore(colorDistances, personalValues)
     return Utility.findScoreFromCrowdsource(colorDistances, crowdsourcedValues)
 
 '''

@@ -25,13 +25,13 @@ Input:
 where bordaCountIm01 is the borda count as calculated in the spec (retrieved
 directly from Crowd.txt)
 '''
-def hyperparameterTuneShapeDistances(imageMap, crowdsourcedValues):
+def hyperparameterTuneShapeDistances(imageMap, crowdsourcedValues, personalValues):
     bestScore = 0
     bestParam = -1
     start = time.time()
     for shapeBorder in range(0, Constants.maxShapeBorder):
         print(f'Trying shape border: {shapeBorder}')
-        currentScore = scoreShape(imageMap, crowdsourcedValues, shapeBorder)
+        currentScore = scoreShape(imageMap, crowdsourcedValues, shapeBorder, personalValues)
         if currentScore > bestScore:
             bestScore = currentScore
             bestParam = shapeBorder
@@ -44,9 +44,10 @@ def hyperparameterTuneShapeDistances(imageMap, crowdsourcedValues):
 Score shape logic - can be run directly from main if known shape border
 otherwise used in hyperparameter tuning
 '''
-def scoreShape(imageMap, crowdsourcedValues, shapeBorder):
+def scoreShape(imageMap, crowdsourcedValues, shapeBorder, personalValues):
     blackWhiteMap = transformIntoBlackWhiteMap(imageMap, shapeBorder)
     shapeDistances = Utility.findDistances(blackWhiteMap, shapeDist, ())
+    Utility.reportHappinessScore(shapeDistances, personalValues)
     return Utility.findScoreFromCrowdsource(shapeDistances, crowdsourcedValues)
 
 '''

@@ -26,13 +26,13 @@ Input:
 where bordaCountIm01 is the borda count as calculated in the spec (retrieved
 directly from Crowd.txt)
 '''
-def hyperparameterTuneTextureDistances(imageMap, crowdsourcedValues):
+def hyperparameterTuneTextureDistances(imageMap, crowdsourcedValues, personalValues):
     bestScore = 0
     bestParam = -1
     start = time.time()
     for textureBinCount in range(1, Constants.maxTextureHistBins + 1):
         print(f'Trying texture: {textureBinCount}')
-        currentScore = scoreTexture(imageMap, crowdsourcedValues, textureBinCount)
+        currentScore = scoreTexture(imageMap, crowdsourcedValues, personalValues, textureBinCount)
         if currentScore > bestScore:
             bestScore = currentScore
             bestParam = textureBinCount
@@ -45,9 +45,10 @@ def hyperparameterTuneTextureDistances(imageMap, crowdsourcedValues):
 Score texture logic - can be run directly from main if known bin count
 otherwise used in hyperparameter tuning
 '''
-def scoreTexture(imageMap, crowdsourcedValues, textureHistBins):
+def scoreTexture(imageMap, crowdsourcedValues, personalValues, textureHistBins):
     laplaceHistMap = transformIntoLaplaceHistograms(imageMap, textureHistBins)
     textureDistances = Utility.findDistances(laplaceHistMap, textureDist, (textureHistBins))
+    Utility.reportHappinessScore(textureDistances, personalValues)
     return Utility.findScoreFromCrowdsource(textureDistances, crowdsourcedValues)
 
 '''

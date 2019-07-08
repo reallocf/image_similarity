@@ -27,29 +27,33 @@ Input:
 where bordaCountIm01 is the borda count as calculated in the spec (retrieved
 directly from Crowd.txt)
 '''
-def hyperparameterTuneOverallDistances(imageMap, crowdsourcedValues):
+def hyperparameterTuneOverallDistances(imageMap, crowdsourcedValues, personalValues):
     bestScore = 0
     bestParams = (-1, -1, -1, -1, -1, -1, -1, -1)
     start = time.time()
-    for i in range(20):
-        aVal = 0.05 * i
-        for j in range(20):
-            bVal = 0.05 * j
+    aVal = Constants.minAVal
+    bVal = Constants.minBVal
+    while aVal <= Constants.maxAVal:
+        while bVal <= Constants.maxBVal:
             cVal = 1.0 - aVal - bVal
             if cVal < 0:
+                bVal += 0.05
                 continue
-            for redBinCount in range(Constants.minJointColorHistBins, Constants.maxJointColorHistBins + 1):
-                for greenBinCount in range(Constants.minJointColorHistBins, Constants.maxJointColorHistBins + 1):
-                    for blueBinCount in range(Constants.minJointColorHistBins, Constants.maxJointColorHistBins + 1):
+            for redBinCount in range(Constants.minJointRedHistBins, Constants.maxJointRedHistBins + 1):
+                for greenBinCount in range(Constants.minJointGreenHistBins, Constants.maxJointGreenHistBins + 1):
+                    for blueBinCount in range(Constants.minJointBlueHistBins, Constants.maxJointBlueHistBins + 1):
                         for textureBinCount in range(Constants.minJointTextureHistBins, Constants.maxJointTextureHistBins + 1):
                             for shapeBorder in range(Constants.minJointShapeBorder, Constants.maxJointShapeBorder + 1):
                                 print(f'A: {aVal} ; B: {bVal} ; C: {cVal} ; R: {redBinCount} ; G: {greenBinCount} ; B: {blueBinCount} ; T {textureBinCount} ; S {shapeBorder}')
                                 params = (aVal, bVal, cVal, redBinCount, greenBinCount, blueBinCount, textureBinCount, shapeBorder)
-                                currentScore = scoreOverall(imageMap, crowdsourcedValues, params)
+                                currentScore = scoreOverall(imageMap, crowdsourcedValues, personalValues, params)
                                 if currentScore > bestScore:
                                     bestScore = currentScore
                                     bestParams = params
                                 print(f'Current score: {currentScore} ; Best score: {bestScore} ; Best score values: {bestParams}')
+            bVal += 0.05
+        bVal = Constants.minBVal
+        aVal += 0.05
     end = time.time()
     print(f'The best histogram bin sizes are {bestParams}')
     print(f'Total time elapsed finding hyperparams: {end - start}')
@@ -58,9 +62,10 @@ def hyperparameterTuneOverallDistances(imageMap, crowdsourcedValues):
 Score shape logic - can be run directly from main if known shape border
 otherwise used in hyperparameter tuning
 '''
-def scoreOverall(imageMap, crowdsourcedValues, hyperparams):
+def scoreOverall(imageMap, crowdsourcedValues, personalValues, hyperparams):
     overallMap = transformOverallMap(imageMap, hyperparams)
     overallDistances = Utility.findDistances(overallMap, overallDist, hyperparams)
+    Utility.reportHappinessScore(overallDistances, personalValues)
     return Utility.findScoreFromCrowdsource(overallDistances, crowdsourcedValues)
 
 '''
