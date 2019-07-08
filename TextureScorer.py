@@ -46,7 +46,7 @@ Score texture logic - can be run directly from main if known bin count
 otherwise used in hyperparameter tuning
 '''
 def scoreTexture(imageMap, crowdsourcedValues, textureHistBins):
-    laplaceHistMap = transformIntoLaplaceHistograms(Utility.grayOutImageMap(imageMap), textureHistBins)
+    laplaceHistMap = transformIntoLaplaceHistograms(imageMap, textureHistBins)
     textureDistances = Utility.findDistances(laplaceHistMap, textureDist, (textureHistBins))
     return Utility.findScoreFromCrowdsource(textureDistances, crowdsourcedValues)
 
@@ -54,9 +54,9 @@ def scoreTexture(imageMap, crowdsourcedValues, textureHistBins):
 Run a laplace transformation over each image then add them into different
 histogram buckets
 '''
-def transformIntoLaplaceHistograms(grayImageMap, textureHistBins):
+def transformIntoLaplaceHistograms(imageMap, textureHistBins):
     laplaceHistMap = {}
-    for imageId, grayPixels in grayImageMap.items():
+    for imageId, grayPixels in Utility.grayOutImageMap(imageMap).items():
         laplaceList = [0 for x in range(textureHistBins)]
         for x in range(Constants.rows):
             for y in range(Constants.cols):

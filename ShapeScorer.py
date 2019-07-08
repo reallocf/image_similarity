@@ -45,7 +45,7 @@ Score shape logic - can be run directly from main if known shape border
 otherwise used in hyperparameter tuning
 '''
 def scoreShape(imageMap, crowdsourcedValues, shapeBorder):
-    blackWhiteMap = transformIntoBlackWhiteMap(Utility.grayOutImageMap(imageMap), shapeBorder)
+    blackWhiteMap = transformIntoBlackWhiteMap(imageMap, shapeBorder)
     shapeDistances = Utility.findDistances(blackWhiteMap, shapeDist, ())
     return Utility.findScoreFromCrowdsource(shapeDistances, crowdsourcedValues)
 
@@ -53,14 +53,14 @@ def scoreShape(imageMap, crowdsourcedValues, shapeBorder):
 Iterate over gray image map and transform values to 1 or 0 based on the passed
 shape border
 '''
-def transformIntoBlackWhiteMap(grayImageMap, shapeBorder):
+def transformIntoBlackWhiteMap(imageMap, shapeBorder):
     blackWhiteMap = {}
-    for imageId, grayPixels in grayImageMap.items():
+    for imageId, grayPixels in Utility.grayOutImageMap(imageMap).items():
         blackWhiteMap[imageId] = [0 if pix <= shapeBorder else 1 for pix in grayPixels]
     return blackWhiteMap
 
 '''
-Finds the texture distance between the two image histograms
+Finds the shape distance between the two image black and white lists
 '''
 def shapeDist(imageBlackWhiteList, otherImageBlackWhiteList, hyperparams):
     totalDist = 0

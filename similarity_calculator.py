@@ -1,6 +1,7 @@
 import ColorScorer
 import Constants
 import FileHandler
+import OverallScorer
 import ShapeScorer
 import TextureScorer
 import Utility
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     #print(ShapeScorer.scoreShape(imageMap, crowdsourcedValues, Constants.bestShapeBorder))
 
     # Tune all hyperparameters
-    #OverallScorer.hyperparameterTuneDistances(imageMap, crowdsourcedValues)
+    #OverallScorer.hyperparameterTuneOverallDistances(imageMap, crowdsourcedValues)
 
     # Prints out the total overall score with the params configured in Constants
-    #print(OverallScorer.scoreShape(imageMap, crowdsourcedValues, Constants.bestOverallParams)
+    print(OverallScorer.scoreOverall(imageMap, crowdsourcedValues, Constants.bestOverallParams))
